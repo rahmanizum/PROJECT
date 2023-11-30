@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+         body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        #loginContainer {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 300px;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            text-align: left;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        a {
+            display: block;
+            margin-top: 10px;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+   <div id="loginContainer">
+    <h2>Login</h2>
+    <form id="loginForm">
+        <label for="email-username">Email:</label>
+        <input type="text" id="loginEmail" name="email-username" required>
+
+        <label for="password">Password:</label>
+        <input type="password" id="loginPassword" name="password" required>
+
+        <button type="submit">Login</button><br>
+        <a href='/'>Sign-Up instead?</a>
+    </form>
+   </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        loginForm.addEventListener('submit' , login)
+        async function login(event) {
+            event.preventDefault();
+            try{
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+
+                const loginDetails = {
+                    email: email,
+                    password: password
+                };
+
+                const response = await axios.post('user/login', loginDetails)
+
+                //this token can be used for authenticated purposes (not used in this task though)
+                localStorage.setItem('token' , response.data.token)
+                window.location.href = '/welcome';
+                displayMessage(response.data.message , response.data.success)
+            }catch(err){
+                displayMessage(err.response.data.message , err.response.data.success)
+                console.log(err.response.data.message)
+            }
+     
+        }
+
+        function displayMessage(message, messageType) {
+            const messageElement = document.createElement('p');
+            messageElement.textContent = message;
+
+            if (messageType) {
+                messageElement.style.color = 'green';
+            } else {
+                messageElement.style.color = 'red';
+            }
+
+            const loginContainer = document.getElementById('loginContainer');
+            loginContainer.appendChild(messageElement);
+
+            setTimeout(function () {
+                loginContainer.removeChild(messageElement);
+            }, 3000); 
+        }
+</script>
+    </script>
+
+</body>
+</html>

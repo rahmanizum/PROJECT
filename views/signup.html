@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        #signupContainer {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 300px;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            text-align: left;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        a {
+            display: block;
+            margin-top: 10px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+   <div id="signupContainer">
+    <h2>Sign Up</h2>
+    <form id="signup-form">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="phone">Phone Number:</label>
+        <select id="country-code" name="country-code" required>
+            <option value="+1">+1 (USA)</option>
+            <option value="+44">+44 (UK)</option>
+            <option value="+91">+91 (India)</option>
+
+        </select>
+        <input type="tel" id="phone" name="phone" pattern="[0-9]{10}" placeholder="Enter your phone number" required>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit">Sign Up</button><br>
+        <a href='/login_page' >already have account ? Login</a>
+    </form>
+   </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        document.getElementById("signup-form").addEventListener("submit", async function(event) {
+            event.preventDefault();
+            try{
+                const name = document.getElementById('username').value;
+                const email = document.getElementById('email').value;
+                const phone = document.getElementById('phone').value;
+                const password = document.getElementById('password').value;
+            
+                const userData = {
+                    name: name,
+                    email: email,
+                    phone:phone,
+                    password: password
+                };
+            
+                const response = await axios.post('user/sign-up', userData);
+                if(response.status === 201){
+                    displayMessage(response.data.message , response.data.success)
+                }
+                
+            }catch(err){
+                displayMessage(err.response.data.message , err.response.data.success)
+                console.log(err.response.data.message)
+            }
+        });
+
+        function displayMessage(message, messageType) {
+            const messageElement = document.createElement('p');
+            messageElement.textContent = message;
+
+            if (messageType ) {
+                messageElement.style.color = 'green';
+            } else {
+                messageElement.style.color = 'red';
+            }
+
+            const signupContainer = document.getElementById('signupContainer');
+            signupContainer.appendChild(messageElement);
+
+            setTimeout(function () {
+                signupContainer.removeChild(messageElement);
+                window.location.href = '/login_page';
+            }, 3000); 
+        }
+    </script>
+
+</body>
+</html>
